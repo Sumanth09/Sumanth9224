@@ -10,18 +10,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="Scripts/myUser.js"></script>
    <style>
-       .Create {
-           width: 100px;
-           height: 100px;
-           -webkit-transition: width 2s, height 4s; 
-           transition: width 2s, height 4s;
-       }
-
-           .Create:hover {
-               width: 300px;
-               height: 300px;
-           }
-       
+     
    </style>
   
 </head>
