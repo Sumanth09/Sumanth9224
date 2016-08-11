@@ -1,0 +1,29 @@
+
+@{
+    ViewBag.Title = "Signin";
+}
+
+<h2>Signin</h2>
+@using (Html.BeginForm())
+{
+    <body style="color:blue;">
+        <fieldset>
+            <div class="lblEmpId">
+                @Html.Label("EmailID")
+            </div>
+            <div class="txtEmpId">
+                @Html.TextBox("EmailID")
+            </div>
+
+            <div class="lblEmppassword">
+                @Html.Label("password")
+            </div>
+            <div class="txtEmppassword">
+                @Html.Password("password")
+            </div>
+            <p>
+                <input type="submit" value="SignIn" />
+            </p>
+        </fieldset>
+    </body>
+}

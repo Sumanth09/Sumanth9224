@@ -1,0 +1,103 @@
+  public class LoginController : Controller
+    {
+        //
+        // GET: /Login/
+
+        public ActionResult Signin()
+        {
+           
+            
+            return View();
+        }
+      [HttpPost]
+     // [ValidateAntiForgeryToken]
+        public ActionResult Signin(string EmailID, string password)
+        {
+
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["Login"].ConnectionString);
+            conn.Open();
+            string select = "select EmplID,EmpName,SickLvCnt,ClLvCnt,SpLvCnt,OtherLvCnt from EmpDets where EmpEmailID='" + EmailID + "' and EmplID='" + password + "'";
+            SqlCommand  cmd= new SqlCommand(select, conn);
+           
+            SqlDataReader sqlReader;
+            sqlReader = cmd.ExecuteReader();
+            sqlReader.Read();
+             if(sqlReader.HasRows)
+             {
+                 Session["Empid"] = sqlReader.GetValue(0);
+                 Session["EmpName"] = sqlReader.GetValue(1);
+                 Session["SickLeaves"] = sqlReader.GetValue(2);
+                 Session["CasualLeaves"] = sqlReader.GetValue(3);
+                 Session["SpecialLeaves"] = sqlReader.GetValue(4);
+                 Session["OtherLeaves"] = sqlReader.GetValue(5);
+                 if (Convert.ToInt32(Session["Empid"]).Equals(8242))
+                     return RedirectToAction("LeaveApprove", "Manager");
+                 else
+                     return RedirectToAction("Leave");
+             }
+            return View();
+        }
+        [HttpGet]
+        public ActionResult Leave()
+        {
+            
+            ViewBag.empname = Convert.ToString(Session["EmpName"]);
+            ViewBag.empid = Convert.ToInt32(Session["Empid"]);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Leave(int Empid, string EmpName, string startDate, string EndDate, string Leaves)
+        {
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["Login"].ConnectionString);
+            conn.Open();
+            int leaveDays=0;
+            string Leavestatus = "1";
+            leaveDays = Convert.ToInt32((Convert.ToDateTime(EndDate) - Convert.ToDateTime(startDate)).TotalDays);
+            string insert="Insert into LeaveDets(EmpID,LvStDt,LvEndDt,LvDays,LvStatus,CreatedBy) Values('"+Empid+"','"+startDate+"','"+EndDate+"','"+leaveDays+"','"+Leavestatus+"','"+EmpName+"')";
+            SqlCommand cmd = new SqlCommand(insert, conn);
+            SqlDataReader sqlReader;
+            sqlReader = cmd.ExecuteReader();
+            return RedirectToAction("LeaveData");
+        }
+         //[HttpPost]
+        public ActionResult LeaveData()
+        {
+            int Empid = Convert.ToInt32(Session["Empid"]);
+            string Empname = Convert.ToString(Session["EmpName"]);
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["Login"].ConnectionString);
+            conn.Open();
+            string select = "select LvStDt,LvEndDt,LvStatus from LeaveDets where EmpID='" + Empid + "'and CreatedBy='" + Empname + "'";
+            SqlCommand cmd = new SqlCommand(select, conn);
+            SqlDataReader sqlReader;
+            sqlReader = cmd.ExecuteReader();
+            var leaves = new List<LeaveDetails>();
+
+          
+            if (sqlReader.HasRows)
+            {
+                while (sqlReader.Read()) { 
+                var leavedetails = new LeaveDetails();
+                leavedetails.StartDate = Convert.ToString(sqlReader[0]);//.GetValue(0));
+                leavedetails.EndDate = Convert.ToString(sqlReader[1]);//.GetValue(1));
+                int leaveStatus = Convert.ToInt32(sqlReader[2]);//.GetValue(2));
+                if (leaveStatus.Equals(0))
+                    leavedetails.LeaveStatus = "Rejected";
+                else
+                if (leaveStatus.Equals(1))
+                    leavedetails.LeaveStatus = "Applied";
+                else
+                    if (leaveStatus.Equals(2))
+                        leavedetails.LeaveStatus = "Approved";
+
+                leaves.Add(leavedetails);
+               
+            }
+            }
+            ViewBag.LeaveDetails = leaves;
+
+              //return View(ViewData["LeaveData"]);
+            return View();
+        }
+       
+        
+    }
