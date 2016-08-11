@@ -31,8 +31,13 @@
         <table class="w3-table w3-bordered w3-striped">
             <tr>
                 <th> EDIT</th>
+                
                 <th>FIRST NAME</th>
+              <th>MiddleName</th>
                 <th>LAST NAME</th>
+<th>Salary</th>
+
+
             </tr>
             <tr ng-repeat="user in users">
                 <td>
