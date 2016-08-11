@@ -26,6 +26,7 @@
             <form ng-hide="hideform">
 
                 <label>FIrst Name:</label>
+                <label> Second name:</label> //mani
                 <input class="w3-input w3-border" ng-model="fName" ng-disabled="!edit" type="text" placeholder="First Name" /><br />
                 <label>Last Name:</label>
                 <input class="w3-input w3-border" ng-model="lName" ng-disabled="!edit" type="text" placeholder="Last Name" /><br />
@@ -40,3 +41,4 @@
   
 </body>
 </html>
+
